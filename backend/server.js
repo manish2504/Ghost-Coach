@@ -15,7 +15,7 @@ dotenv.config();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const uploadsDir = path.join(__dirname, 'uploads');
 
-if (!fs.existsSync(uploadsDir)) {
+if (!process.env.VERCEL && !fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
@@ -41,6 +41,10 @@ app.use('/api/chat', chatRoutes);
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Ghost Coach API running on port ${PORT}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Ghost Coach API running on port ${PORT}`);
+  });
+}
+
+export default app;

@@ -2,8 +2,12 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import os from 'os';
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const uploadsDir = path.join(__dirname, '..', 'uploads');
+const uploadsDir = process.env.VERCEL 
+  ? os.tmpdir() 
+  : path.join(__dirname, '..', 'uploads');
 
 const storage = multer.diskStorage({
   destination: uploadsDir,
