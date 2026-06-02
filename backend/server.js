@@ -22,9 +22,21 @@ if (!process.env.VERCEL && !fs.existsSync(uploadsDir)) {
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const getOrigin = (requestOrigin) => {
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+  if (frontendUrl === '*') return requestOrigin || '*';
+  try {
+    return new URL(frontendUrl).origin;
+  } catch {
+    return frontendUrl.replace(/\/$/, '');
+  }
+};
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      callback(null, getOrigin(origin));
+    },
     credentials: true,
   })
 );
